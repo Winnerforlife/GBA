@@ -1,10 +1,16 @@
+from django.db.models import Prefetch
 from drf_spectacular.utils import OpenApiParameter, extend_schema
-from rest_framework import mixins, viewsets
+from rest_framework import generics, mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .models import Result, ResultStatus, Sample, SampleStatus
-from .serializers import ResultSerializer, SampleSerializer, SampleStatusSerializer
+from .serializers import (
+    ResultSerializer,
+    SampleExportSerializer,
+    SampleSerializer,
+    SampleStatusSerializer,
+)
 from .services import approve_result, change_sample_status, create_result
 
 
@@ -96,3 +102,16 @@ class ResultViewSet(
     def approve(self, request, result_id=None):
         result = approve_result(self.get_object())
         return Response(self.get_serializer(result).data)
+
+
+@extend_schema(tags=["integration"])
+class SampleExportView(generics.RetrieveAPIView):
+    serializer_class = SampleExportSerializer
+    lookup_field = "sample_id"
+    queryset = Sample.objects.prefetch_related(
+        Prefetch(
+            "results",
+            queryset=Result.objects.filter(status=ResultStatus.APPROVED),
+            to_attr="approved_results",
+        )
+    )

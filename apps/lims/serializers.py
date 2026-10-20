@@ -35,3 +35,20 @@ class ResultSerializer(serializers.ModelSerializer):
         if not math.isfinite(value):
             raise serializers.ValidationError("Value must be a finite number.")
         return value
+
+
+class ExportResultSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Result
+        fields = ["parameter", "value", "unit", "status"]
+
+
+class SampleExportSerializer(serializers.ModelSerializer):
+    sample_status = serializers.CharField(source="status", read_only=True)
+    results = ExportResultSerializer(
+        source="approved_results", many=True, read_only=True
+    )
+
+    class Meta:
+        model = Sample
+        fields = ["sample_id", "order_id", "client_id", "sample_status", "results"]
