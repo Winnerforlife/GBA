@@ -163,4 +163,8 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "REST API for laboratory samples, test results and integration export.",
     "VERSION": "0.1.0",
     "SERVE_INCLUDE_SCHEMA": False,
+    "ENUM_NAME_OVERRIDES": {
+        "SampleStatusEnum": "apps.lims.models.SampleStatus",
+        "ResultStatusEnum": "apps.lims.models.ResultStatus",
+    },
 }
