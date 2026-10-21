@@ -125,3 +125,5 @@ The task leaves some details open. Current choices, to be confirmed with the bus
 - A sample can have several results for the same parameter (re-measurements); there is no
   unique constraint on `(sample, parameter)`.
 - A sample can be completed even if some of its results are still drafts.
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for design decisions.
